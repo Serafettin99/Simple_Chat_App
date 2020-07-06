@@ -33,7 +33,7 @@ const Dashboard = () => {
   const classes = useStyles();
 
   // Context
-  const [allChats] = useContext(Context);
+  const { allChats, sendChatAction, user } = useContext(Context);
   const topics = Object.keys(allChats);
 
   // Local
@@ -83,7 +83,14 @@ const Dashboard = () => {
           className={classes.chatBox}
         />
 
-        <Button variant='contained' color='primary'>
+        <Button
+          variant='contained'
+          color='primary'
+          onClick={() => {
+            sendChatAction({ from: user, msg: textValue, topic: activeTopic });
+            setTextValue('');
+          }}
+        >
           Send
         </Button>
       </div>

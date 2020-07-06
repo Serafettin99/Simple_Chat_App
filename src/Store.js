@@ -16,15 +16,17 @@ const initialState = {
 };
 
 const reducer = (state, action) => {
+  const { topic, from, msg } = action.payload;
+
   switch (action.type) {
     case 'RECEIVE_MESSAGE':
       return {
         ...state,
-        [action.payload.topic]: [
-          ...state[action.payload.topic],
+        [topic]: [
+          ...state[topic],
           {
-            from: action.payload.from,
-            msg: action.payload.msg,
+            from: from,
+            msg: msg,
           },
         ],
       };
@@ -33,14 +35,30 @@ const reducer = (state, action) => {
   }
 };
 
+const sendChatAction = (value) => {
+  socket.emit('chat message', value);
+};
+
 let socket;
 
-export const Store = ({ children }) => {
+export const Store = (props) => {
+  const [allChats, dispatch] = useReducer(reducer, initialState);
+
   if (!socket) {
     socket = io(':3001');
+    socket.on('chat message', function (msg) {
+      console.log(dispatch({ type: 'RECEIVE_MESSAGE', payload: msg }));
+      dispatch({ type: 'RECEIVE_MESSAGE', payload: msg });
+    });
   }
-  const reducerHook = useReducer(reducer, initialState);
-  return <Context.Provider value={reducerHook}>{children}</Context.Provider>;
+
+  const user = 'Ali' + Math.random(100).toFixed(2);
+
+  return (
+    <Context.Provider value={{ allChats, sendChatAction, user }}>
+      {props.children}
+    </Context.Provider>
+  );
 };
 
 export default Store;

@@ -35,19 +35,19 @@ const reducer = (state, action) => {
   }
 };
 
+let socket;
+
 const sendChatAction = (value) => {
   socket.emit('chat message', value);
 };
 
-let socket;
-
-export const Store = (props) => {
+const Store = (props) => {
   const [allChats, dispatch] = useReducer(reducer, initialState);
 
   if (!socket) {
     socket = io(':3001');
-    socket.on('chat message', function (msg) {
-      console.log(dispatch({ type: 'RECEIVE_MESSAGE', payload: msg }));
+    socket.on('chat message', (msg) => {
+      console.log({ msg });
       dispatch({ type: 'RECEIVE_MESSAGE', payload: msg });
     });
   }

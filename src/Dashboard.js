@@ -35,10 +35,14 @@ const Dashboard = () => {
   // Context
   const { allChats, sendChatAction, user } = useContext(Context);
   const topics = Object.keys(allChats);
+  console.log({ allChats });
 
   // Local
   const [textValue, setTextValue] = useState('');
   const [activeTopic, setActiveTopic] = useState(topics[0]);
+
+  console.log({ activeTopic });
+  allChats[activeTopic].map((chat) => console.log({ chat }));
 
   return (
     <Paper elevation={3} className={classes.root}>
